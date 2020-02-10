@@ -46,38 +46,14 @@ Nginx-Lua-WAF拥有非常高的性能，在虚拟机中测试结果如下：
 
 从[openresty](http://openresty.org/cn/download.html)官方下载最新版本的源码包。
 
-01、编译安装openresty：
+01、安装openresty：
 
 ```bash
-#安装工具
-yum -y install wget
-#准备编译环境
-yum -y install gcc
-#准备依赖包
-yum -y install install perl openssl openssl-devel
-#下载并解压源码包
-wget https://openresty.org/download/openresty-1.13.6.1.tar.gz
-tar zxf openresty-1.13.6.1.tar.gz
-#编译安装
-cd openresty-1.13.6.1
-./configure
-make
-make install
-#默认openresty会安装到/usr/local/openresty目录
-#nginx配置文件位置:/usr/local/openresty/nginx/conf/nginx.conf
-#nginx站点目录:/usr/local/openresty/nginx/html
-#nginx可执行文件位置:/usr/local/openresty/nginx/sbin/nginx
-#后续工作
-#临时关闭selinux
-setenforce 0
-#开启防火墙
-#开启80端口的两种方式
-firewall-cmd --permanent --zone=public --add-port=80/tcp
-firewall-cmd --permanent --zone=public --add-service=http
-firewall-cmd --reload  #重载防火墙，使配置生效
-#启动nginx
-/usr/local/openresty/nginx/sbin/nginx -t  #检查配置文件语法是否正确
-/usr/local/openresty/nginx/sbin/nginx     #启动nginx
+#配置openresty YUM源
+yum-config-manager --add-repo http://openresty.org/package/rhel/openresty.repo
+
+#安装openresty
+yum install -y openresty
 ```
 
 02、编译模块usertime.so
