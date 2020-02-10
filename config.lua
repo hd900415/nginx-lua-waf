@@ -83,7 +83,7 @@ local _M = {
     -- CC攻击过滤开关
     config_cc_check = "on",
     -- 设置CC攻击检测依据 攻击阈值/检测时间段
-    config_cc_rate = "10/10",
+    config_cc_rate = "60/30",
 
 --08WAF处理:跳转/html/仅日志
     -- Cookie过滤开关
