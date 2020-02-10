@@ -38,7 +38,7 @@ Nginx-Lua-WAF拥有非常高的性能，在虚拟机中测试结果如下：
 ##### 可以看出启用waf后，Nginx性能依然非常高，近10k次的处理能力，能够满足任何业务场景的需要
 
 # Nginx-Lua-WAF处理流程
-![WAF.png](https://raw.githubusercontent.com/ddonline/nginx-lua-waf/master/other/WAF.png)
+![WAF.png](https://raw.githubusercontent.com/pablo180820/nginx-lua-waf/master/other/WAF.png)
 
 # 安装部署
 ## 以CentOS 7为例
