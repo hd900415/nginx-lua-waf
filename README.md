@@ -78,7 +78,7 @@ chmod a+x /usr/local/openresty/lualib/usertime.so
 #安装工具
 yum -y install unzip
 #下载Nginx-Lua-WAF
-wget https://github.com/ddonline/nginx-lua-waf/archive/master.zip
+wget https://github.com/pablo180820/nginx-lua-waf/archive/master.zip
 #解压缩
 unzip master.zip  #解压后得到文件夹nginx-lua-waf-master
 #对文件夹重命名
