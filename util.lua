@@ -95,25 +95,21 @@ end
 -- 记录JSON格式日志
 function _M.log_record(config_log_dir, attack_type, url, data, ruletag)
     local log_path = config_log_dir
-    local client_IP = _M.get_client_ip()
-    local user_agent = _M.get_user_agent()
-    local server_name = ngx.var.server_name
     local local_time = string.sub(ngx.localtime(),1,10).."T"..string.sub(ngx.localtime(),12,-1).."+08:00"
     local log_json_obj = {
-        realip = client_IP,
         timestamp = local_time,
-        server = server_name,
-        agent = user_agent,
-        attack_type = attack_type,
+        server = ngx.var.server_name,
+        real_user_ip = _M.get_client_ip(),
+        domain = _M.get_server_host(),
+        http_user_agent = _M.get_user_agent(),
+        uri = ngx.var.uri,
         urls = url,
-        url = ngx.var.uri,
         postdata = data,
+        attack_type = attack_type,
         ruletag = ruletag,
         waf_mode = config.config_waf_model,
     }
     local log_line = cjson.encode(log_json_obj)
-    -- log_line = string.gsub(log_line,"\\\"","")   -- 去掉所有\"
-    -- log_line = string.gsub(log_line,"\\","")     -- 去掉所有\
     local log_name = string.format("%s/%s_waf.log", log_path, ngx.today())
     local file, err = io.open(log_name, "a+")
     if err ~= nil then ngx.log(ngx.DEBUG, "file err:" .. err) end
