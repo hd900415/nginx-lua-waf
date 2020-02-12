@@ -55,13 +55,6 @@ function _M.black_ip_check()
         local IP_BLACK_RULE = _M.get_rule('blackip.rule')
         local BLACK_IP = ngx.var.server_name.."-"..util.get_client_ip()
 
-        -- 自动封禁的黑名单IP
-        if util.bad_guy_check() then
-            util.log_record(config.config_log_dir, '黑名单IP(临时)', ngx.var.request_uri, "_", rule)
-            util.waf_output()
-            return true
-        end
-
         -- 匹配规则中黑名单IP
         if IP_BLACK_RULE ~= nil then
             for _, rule in pairs(IP_BLACK_RULE) do
