@@ -86,7 +86,7 @@ function _M.get_client_ip()
     local CLIENT_IP = headers["X-REAL-IP"] or headers["X_FORWARDED_FOR"] or ngx.var.remote_addr or "0.0.0.0"
 
     if type(CLIENT_IP) == "table" then
-        CLIENT_IP = table.concat(CLIPENT_IP, "," )
+        CLIENT_IP = table.concat(CLIENT_IP, "," )
     end
     if type(CLIENT_IP) ~= "string" then
         CLIENT_IP = "0.0.0.0"
