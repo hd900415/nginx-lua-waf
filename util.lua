@@ -5,6 +5,20 @@ local cjson = require("cjson.safe")
 local string = require("string")
 local config = require("config")
 
+-- Split string with resp to table
+function string.split(self, reps)
+    local R = {}
+    self:gsub('[^'..reps..']+', function(w)
+        table.insert(R, w)
+    end)
+    return R
+end
+
+-- Trims white space on both sides.
+function string.strip(self)
+    return self:match('^%s*(.-)%s*$')
+end
+
 local _M = {
     version = "0.1",
     RULE_TABLE = {},
@@ -61,35 +75,38 @@ function _M.get_rules(rules_path)
     return (_M.RULE_TABLE)
 end
 
--- 获取来访IP
+-- 获取domain
+function _M.get_domain()
+    return ngx.req.get_headers()["Host"]
+end
+
+--获取客户端IP
 function _M.get_client_ip()
-    local CLIENT_IP = ngx.req.get_headers()["X_real_ip"]
-    if CLIENT_IP == nil then
-        CLIENT_IP = ngx.req.get_headers()["X_Forwarded_For"]
-    end
-    if CLIENT_IP == nil then
-        CLIENT_IP = ngx.var.remote_addr
-    end
-    if CLIENT_IP == nil then
-        CLIENT_IP = "0.0.0.0"
-    end
-    -- 判断CLIENT_IP是否为table类型，table类型即获取到多个ip的情况
+    local headers = ngx.req.get_headers()
+    local CLIENT_IP = headers["X-REAL-IP"] or headers["X_FORWARDED_FOR"] or ngx.var.remote_addr or "0.0.0.0"
+
     if type(CLIENT_IP) == "table" then
-        CLIENT_IP = table.concat(CLIENT_IP, ",")
+        CLIENT_IP = table.concat(CLIPENT_IP, "," )
     end
     if type(CLIENT_IP) ~= "string" then
         CLIENT_IP = "0.0.0.0"
     end
-    return CLIENT_IP
+    return CLIENT_IP:split(",")[1]:strip()
 end
 
 -- 获取UserAgnet
 function _M.get_user_agent()
-    local USER_AGENT = ngx.var.http_user_agent
-    if USER_AGENT == nil then
-        USER_AGENT = "unknown"
-    end
-    return USER_AGENT
+    return ngx.var.http_user_agent or "-"
+end
+
+-- 获取X-Real-IP
+function _M.get_x_real_ip()
+    return ngx.req.get_headers()["X-Real-IP"] or "-"
+end
+
+-- 获取X-Forwarded-For
+function _M.get_x_forwarded_for()
+    return ngx.req.get_headers()["X-Forwarded-For"] or "-"
 end
 
 -- 记录JSON格式日志
@@ -99,11 +116,14 @@ function _M.log_record(config_log_dir, attack_type, url, data, ruletag)
     local log_json_obj = {
         timestamp = local_time,
         server = ngx.var.server_name,
-        real_user_ip = _M.get_client_ip(),
-        domain = _M.get_server_host(),
+        domain = _M.get_domain(),
         http_user_agent = _M.get_user_agent(),
         uri = ngx.var.uri,
         urls = url,
+        remote_addr = ngx.var.remote_addr,
+        http_x_forwarded_for = _M.get_x_forwarded_for(),
+        http_x_real_ip = _M.get_x_real_ip(),
+        real_user_ip = _M.get_client_ip(),
         postdata = data,
         attack_type = attack_type,
         ruletag = ruletag,
@@ -134,12 +154,6 @@ function _M.waf_output()
         ngx.say(string.format(config.config_output_html, _M.get_client_ip()))
         ngx.exit(ngx.status)
     end
-end
-
--- 获取请求头中Host字段
-function _M.get_server_host()
-    local host = ngx.req.get_headers()["Host"]
-    return host
 end
 
 -- 将IP存入共享存储gadGuys
