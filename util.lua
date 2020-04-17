@@ -144,6 +144,9 @@ end
 -- 恶意访问处理函数
 -- 使用log模式时，仅记录ip到共享存储
 function _M.waf_output()
+    local bad_guy_ip = _M.get_client_ip()
+    _M.set_bad_guys(bad_guy_ip, config.config_expire_time)
+
     if config.config_waf_model == "redirect" then
         ngx.redirect(config.config_waf_redirect_url, 301)
     elseif config.config_waf_model == "log" then
