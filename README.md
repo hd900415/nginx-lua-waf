@@ -137,10 +137,3 @@ curl http://127.0.0.1/test.zip
 2. 开源项目：https://github.com/xsec-lab/x-waf
 3. 开源项目：https://github.com/tluolovembtan/jsh_waf
 4. 开源项目：https://github.com/loveshell/ngx_lua_waf
-5. test
-5. test
-5. test
-5. test
-5. test
-5. test
-5. test
