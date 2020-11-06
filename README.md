@@ -120,6 +120,8 @@ curl http://127.0.0.1/test.zip
 #若返回 "规则过滤测试" 字样，则说明waf已生效，url.rule中定义有规则阻止下载zip文件，此时/var/log/nginx/目录中应有类似2018-05-04_waf.log的JSON格式日志文件
 #若返回 404 说明waf未生效
 ```
+## 添加事项 GeoIP添加；
+wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz
 
 # 使用中注意事项
 - waf配置文件：nginx-lua-waf/config.lua，各项配置均有注释说明
@@ -130,10 +132,3 @@ curl http://127.0.0.1/test.zip
 - 更新规则文件后，使用reload命令(/usr/local/openresty/nginx/sbin/nginx -s reload)使用配置生效，该命令不会中断服务，不建议使用restart
 - 部署过程中对openresty的安装使用的是默认选项，如果需要自定义，可以参考我的博文:[编译Nginx(OpenResty)支持Lua扩展](http://pdf.us/2018/03/19/742.html)
 
-
-# 致谢
-
-1. 感谢春哥开源的[openresty](https://openresty.org)
-2. 开源项目：https://github.com/xsec-lab/x-waf
-3. 开源项目：https://github.com/tluolovembtan/jsh_waf
-4. 开源项目：https://github.com/loveshell/ngx_lua_waf
